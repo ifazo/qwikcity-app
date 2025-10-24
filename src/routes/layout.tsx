@@ -1,10 +1,7 @@
-import { component$, Slot, useStyles$ } from "@builder.io/qwik";
+import { component$, Slot } from "@builder.io/qwik";
 import { routeLoader$ } from "@builder.io/qwik-city";
-
-import Header from "../components/starter/header/header";
-import Footer from "../components/starter/footer/footer";
-
-import styles from "./styles.css?inline";
+import Footer from "~/components/ui/footer";
+import Header from "~/components/ui/header";
 
 export const useServerTimeLoader = routeLoader$(() => {
   return {
@@ -13,7 +10,7 @@ export const useServerTimeLoader = routeLoader$(() => {
 });
 
 export default component$(() => {
-  useStyles$(styles);
+  
   return (
     <>
       <Header />
