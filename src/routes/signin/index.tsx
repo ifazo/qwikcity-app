@@ -6,61 +6,58 @@ import {
   signInWithGithub,
   signInWithGoogle,
 } from "~/lib/firebase";
+import { showCustomToast } from "~/lib/useToast";
 
 export default component$(() => {
   const state = useStore({
     email: "",
     password: "",
-    error: "",
-    success: "",
     loading: false,
   });
 
   const handleEmailSignIn = $(async (e: Event) => {
     e.preventDefault();
-    state.error = "";
     state.loading = true;
-
     try {
       await signIn(state.email, state.password);
-      state.success = "Signed in successfully!";
+      showCustomToast("success", "Signed in successfully!");
     } catch (err: any) {
-      state.error = err.message || "Failed to sign in.";
+      showCustomToast("error", err.message);
     } finally {
       state.loading = false;
+      state.email = "";
+      state.password = "";
     }
   });
 
   const handleGoogleSignIn = $(async () => {
-    state.error = "";
     try {
       await signInWithGoogle();
-      state.success = "Signed in with Google!";
+      showCustomToast("success", "Signed in with Google!");
     } catch (err: any) {
-      state.error = err.message;
+      showCustomToast("error", err.message);
     }
   });
 
   const handleGithubSignIn = $(async () => {
-    state.error = "";
     try {
       await signInWithGithub();
-      state.success = "Signed in with GitHub!";
+      showCustomToast("success", "Signed in with GitHub!");
     } catch (err: any) {
-      state.error = err.message;
+      showCustomToast("error", err.message);
     }
   });
 
   const handleResetPassword = $(async () => {
     if (!state.email) {
-      state.error = "Enter your email to reset password.";
+      showCustomToast("error", "Enter your email to reset password.");
       return;
     }
     try {
       await resetPassword(state.email);
-      state.success = "Password reset email sent.";
+      showCustomToast("info", "Password reset email sent.");
     } catch (err: any) {
-      state.error = err.message;
+      showCustomToast("error", err.message);
     }
   });
 
@@ -75,11 +72,13 @@ export default component$(() => {
 
         <div class="mt-6 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div class="bg-white px-6 py-12 shadow-sm sm:rounded-lg sm:px-12">
-            <form class="space-y-6" onSubmit$={handleEmailSignIn}>
+            <form
+              preventdefault:submit
+              onSubmit$={handleEmailSignIn}
+              class="space-y-6"
+            >
               <div>
-                <label
-                  class="block text-sm/6 font-medium text-gray-900"
-                >
+                <label class="block text-sm/6 font-medium text-gray-900">
                   Email address
                 </label>
                 <div class="mt-2">
@@ -97,9 +96,7 @@ export default component$(() => {
               </div>
 
               <div>
-                <label
-                  class="block text-sm/6 font-medium text-gray-900"
-                >
+                <label class="block text-sm/6 font-medium text-gray-900">
                   Password
                 </label>
                 <div class="mt-2">
@@ -148,9 +145,7 @@ export default component$(() => {
                       </svg>
                     </div>
                   </div>
-                  <label
-                    class="block text-sm/6 text-gray-900"
-                  >
+                  <label class="block text-sm/6 text-gray-900">
                     Remember me
                   </label>
                 </div>
@@ -171,15 +166,9 @@ export default component$(() => {
                   disabled={state.loading}
                   class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                   {state.loading ? "Signing in..." : "Sign in"}
+                  {state.loading ? "Signing in..." : "Sign in"}
                 </button>
               </div>
-              {state.error && (
-                <p class="text-red-500 text-sm mt-2">{state.error}</p>
-              )}
-              {state.success && (
-                <p class="text-green-600 text-sm mt-2">{state.success}</p>
-              )}
             </form>
 
             <div>

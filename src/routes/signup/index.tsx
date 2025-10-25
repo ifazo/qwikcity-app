@@ -1,48 +1,45 @@
 import { $, component$, useStore } from "@builder.io/qwik";
 import { DocumentHead, Link } from "@builder.io/qwik-city";
 import { signInWithGithub, signInWithGoogle, signUp } from "~/lib/firebase";
+import { showCustomToast } from "~/lib/useToast";
 
 export default component$(() => {
   const state = useStore({
     email: "",
     password: "",
-    error: "",
-    success: "",
     loading: false,
   });
 
   const handleEmailSignUp = $(async (e: Event) => {
     e.preventDefault();
-    state.error = "";
     state.loading = true;
-
     try {
       await signUp(state.email, state.password);
-      state.success = "Signed up successfully!";
+      showCustomToast("success", "Account created successfully!");
     } catch (err: any) {
-      state.error = err.message || "Failed to sign up.";
+      showCustomToast("error", err.message || "Failed to sign up.");
     } finally {
       state.loading = false;
+      state.email = "";
+      state.password = "";
     }
   });
 
   const handleGoogleSignIn = $(async () => {
-    state.error = "";
     try {
       await signInWithGoogle();
-      state.success = "Signed in with Google!";
+      showCustomToast("success", "Signed in with Google!");
     } catch (err: any) {
-      state.error = err.message;
+      showCustomToast("error", err.message);
     }
   });
 
   const handleGithubSignIn = $(async () => {
-    state.error = "";
     try {
       await signInWithGithub();
-      state.success = "Signed in with GitHub!";
+      showCustomToast("success", "Signed in with GitHub!");
     } catch (err: any) {
-      state.error = err.message;
+      showCustomToast("error", err.message);
     }
   });
 
@@ -57,11 +54,13 @@ export default component$(() => {
 
         <div class="mt-6 sm:mx-auto sm:w-full sm:max-w-[480px]">
           <div class="bg-white px-6 py-12 shadow-sm sm:rounded-lg sm:px-12">
-            <form class="space-y-6" onSubmit$={handleEmailSignUp}>
+            <form
+              preventdefault:submit
+              onSubmit$={handleEmailSignUp}
+              class="space-y-6"
+            >
               <div>
-                <label
-                  class="block text-sm/6 font-medium text-gray-900"
-                >
+                <label class="block text-sm/6 font-medium text-gray-900">
                   Email address
                 </label>
                 <div class="mt-2">
@@ -79,9 +78,7 @@ export default component$(() => {
               </div>
 
               <div>
-                <label
-                  class="block text-sm/6 font-medium text-gray-900"
-                >
+                <label class="block text-sm/6 font-medium text-gray-900">
                   Password
                 </label>
                 <div class="mt-2">
@@ -129,9 +126,7 @@ export default component$(() => {
                       </svg>
                     </div>
                   </div>
-                  <label
-                    class="block text-sm/6 text-gray-900"
-                  >
+                  <label class="block text-sm/6 text-gray-900">
                     Terms & conditions
                   </label>
                 </div>
@@ -155,12 +150,6 @@ export default component$(() => {
                   {state.loading ? "Signing up..." : "Sign up"}
                 </button>
               </div>
-              {state.error && (
-                <p class="text-red-500 text-sm mt-2">{state.error}</p>
-              )}
-              {state.success && (
-                <p class="text-green-600 text-sm mt-2">{state.success}</p>
-              )}
             </form>
 
             <div>
