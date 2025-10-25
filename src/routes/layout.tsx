@@ -14,7 +14,7 @@ export default component$(() => {
   return (
     <>
       <Header />
-      <main>
+      <main class="min-h-screen bg-gray-50">
         <Slot />
       </main>
       <Footer />
