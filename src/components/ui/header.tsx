@@ -1,4 +1,4 @@
-import { component$, useSignal } from "@builder.io/qwik";
+import { component$ } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
 
 export const navigation = [
@@ -10,8 +10,8 @@ export const navigation = [
 
 export default component$(() => {
   const loc = useLocation();
-  const openCart = useSignal<string | null>(null);
-  console.log("Cart state:", openCart.value);
+  // const openCart = useSignal<string | null>(null);
+  
   return (
     <div class="bg-white">
       <header class="relative bg-white">
