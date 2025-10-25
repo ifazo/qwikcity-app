@@ -11,7 +11,7 @@ export const navigation = [
 export default component$(() => {
   const loc = useLocation();
   const openCart = useSignal<string | null>(null);
-
+  console.log("Cart state:", openCart.value);
   return (
     <div class="bg-white">
       <header class="relative bg-white">
@@ -21,7 +21,7 @@ export default component$(() => {
               {/* Logo */}
               <div class="flex flex-1">
                 <Link href="/">
-                  <span class="sr-only">Your Company</span>
+                  <span class="sr-only">logo</span>
                   <img alt="logo" src="/logo.svg" class="h-8 w-auto" />
                 </Link>
               </div>
