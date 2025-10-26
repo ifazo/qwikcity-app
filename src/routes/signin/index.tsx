@@ -1,5 +1,6 @@
-import { component$, $, useStore } from "@builder.io/qwik";
-import { DocumentHead, Link } from "@builder.io/qwik-city";
+import { component$, $, useStore, useContext } from "@builder.io/qwik";
+import { DocumentHead, Link, useNavigate } from "@builder.io/qwik-city";
+import { AppContext } from "~/context/store";
 import {
   resetPassword,
   signIn,
@@ -9,18 +10,22 @@ import {
 import { showCustomToast } from "~/lib/useToast";
 
 export default component$(() => {
+  const store = useContext(AppContext);
+  const nav = useNavigate();
+
   const state = useStore({
     email: "",
     password: "",
     loading: false,
   });
 
-  const handleEmailSignIn = $(async (e: Event) => {
-    e.preventDefault();
+  const handleEmailSignIn = $(async () => {
     state.loading = true;
     try {
-      await signIn(state.email, state.password);
+      const credential = await signIn(state.email, state.password);
+      store.user = credential.user;
       showCustomToast("success", "Signed in successfully!");
+      await nav("/");
     } catch (err: any) {
       showCustomToast("error", err.message);
     } finally {
@@ -32,8 +37,10 @@ export default component$(() => {
 
   const handleGoogleSignIn = $(async () => {
     try {
-      await signInWithGoogle();
+      const credential = await signInWithGoogle();
+      store.user = credential.user;
       showCustomToast("success", "Signed in with Google!");
+      await nav("/");
     } catch (err: any) {
       showCustomToast("error", err.message);
     }
@@ -41,8 +48,10 @@ export default component$(() => {
 
   const handleGithubSignIn = $(async () => {
     try {
-      await signInWithGithub();
+      const credential = await signInWithGithub();
+      store.user = credential.user;
       showCustomToast("success", "Signed in with GitHub!");
+      await nav("/");
     } catch (err: any) {
       showCustomToast("error", err.message);
     }

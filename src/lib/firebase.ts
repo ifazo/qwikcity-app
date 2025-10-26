@@ -1,6 +1,7 @@
 import {
   GithubAuthProvider,
   GoogleAuthProvider,
+  User,
   createUserWithEmailAndPassword,
   getAuth,
   sendPasswordResetEmail,
@@ -14,12 +15,15 @@ export const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
-export const getCurrentUser = () => {
+export const getCurrentUser = (): Promise<User | null> => {
   return new Promise((resolve, reject) => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      unsubscribe();
-      resolve(user);
-    }, reject);
+    const unsubscribe = auth.onAuthStateChanged(
+      (user) => {
+        unsubscribe();
+        resolve(user);
+      },
+      (error) => reject(error)
+    );
   });
 };
 

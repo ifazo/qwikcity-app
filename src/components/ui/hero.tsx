@@ -1,4 +1,5 @@
 import { component$ } from "@builder.io/qwik";
+import { Link } from "@builder.io/qwik-city";
 
 export default component$(() => {
   return (
@@ -22,10 +23,10 @@ export default component$(() => {
           <div class="hidden sm:mb-8 sm:flex sm:justify-center">
             <div class="relative rounded-full px-3 py-1 text-sm/6 text-gray-400 ring-1 ring-white/10 hover:ring-white/20">
               Announcing our next round of funding.{" "}
-              <a href="#" class="font-semibold text-white">
-                <span class="absolute inset-0" aria-hidden="true"></span>Read
-                more <span aria-hidden="true">&rarr;</span>
-              </a>
+              <Link href="/signup" class="font-semibold text-white">
+                <span class="absolute inset-0" aria-hidden="true"></span>Sign up
+                <span aria-hidden="true">&rarr;</span>
+              </Link>
             </div>
           </div>
           <div class="text-center">
@@ -96,9 +97,10 @@ export default component$(() => {
               >
                 Get started
               </button>
-              <a href="#" class="text-sm/6 font-semibold text-white">
-                Learn more <span aria-hidden="true">→</span>
-              </a>
+              <Link href="/signin" class="text-sm/6 font-semibold text-white">
+                Sign in
+                <span aria-hidden="true">&rarr;</span>
+              </Link>
             </div>
           </div>
         </div>

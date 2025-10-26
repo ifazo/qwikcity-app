@@ -1,5 +1,8 @@
-import { component$ } from "@builder.io/qwik";
+import { $, component$, useContext } from "@builder.io/qwik";
 import { Link, useLocation } from "@builder.io/qwik-city";
+import { AppContext } from "~/context/store";
+import { signOut } from "~/lib/firebase";
+import { showCustomToast } from "~/lib/useToast";
 
 export const navigation = [
   { name: "Home", href: "/" },
@@ -11,7 +14,15 @@ export const navigation = [
 export default component$(() => {
   const loc = useLocation();
   // const openCart = useSignal<string | null>(null);
-  
+  const store = useContext(AppContext);
+
+  const handleSignout = $(() => {
+    signOut();
+    store.user = null;
+    store.cart = [];
+    showCustomToast("success", "Signed out successfully");
+  });
+
   return (
     <div class="bg-white">
       <header class="relative bg-white">
@@ -55,7 +66,7 @@ export default component$(() => {
 
               {/* Right side icons */}
               <div class="flex flex-1 items-center justify-end">
-                <Link href="#" class="p-2 text-gray-400 hover:text-gray-500">
+                {/* <Link href="#" class="p-2 text-gray-400 hover:text-gray-500">
                   <span class="sr-only">Search</span>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -71,9 +82,27 @@ export default component$(() => {
                       d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
                     />
                   </svg>
-                </Link>
+                </Link> */}
+                {store.user ? (
+                  <button
+                    type="button"
+                    onClick$={handleSignout}
+                    class="rounded-sm bg-white px-2 py-1 text-xs font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50"
+                  >
+                    Sign out
+                  </button>
+                ) : (
+                  <Link href="/signin">
+                    <button
+                      type="button"
+                      class="p-2 rounded-sm bg-white px-2 py-1 text-xs font-semibold text-gray-900 ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50"
+                    >
+                      Sign in
+                    </button>
+                  </Link>
+                )}
 
-                <div class="ml-4 flow-root lg:ml-8">
+                <div class="ml-2 flow-root lg:ml-4">
                   <Link
                     href="#"
                     class="group -m-2 flex items-center p-2 text-gray-400 hover:text-gray-500"
